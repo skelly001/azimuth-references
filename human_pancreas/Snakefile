@@ -1,13 +1,6 @@
 ############################## Config #########################################
 container: "docker://satijalab/azimuth-references:latest"
 
-############################## All  ###########################################
-rule all:
-    input:
-        "reference/ref.Rds",
-        "reference/idx.annoy",
-        "reference/peng_n7.rds"
-
 ############################## Reference ######################################
 rule download:
     params:
