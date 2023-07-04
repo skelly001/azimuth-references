@@ -86,47 +86,4 @@ rule export:
         Rscript {input.script} {input.ob} {input.ann} > logs/export.Rout 2>&1
         """
 
-############################## Demo ###########################################
-rule download_demo:
-    params:
-        url = "https://zenodo.org/record/3969339/files/StdWf1_PRJCA001063_CRC_besca2.raw.h5ad"
-    output:
-        "logs/download_peng_data.log",
-        "data/StdWf1_PRJCA001063_CRC_besca2.raw.h5ad"
-    shell:
-        """
-        wget {params.url} -P data
-        echo "Peng demo data downloaded on: $(date)" > logs/download_peng_data.log
-        """
-
-rule setup_demo:
-    input:
-        script = "scripts/setup_peng.R",
-        data = "data/StdWf1_PRJCA001063_CRC_besca2.raw.h5ad"
-    output:
-        "reference/peng_n7.rds"
-    shell:
-        """
-        Rscript {input.script} {input.data} {output} > logs/setup_peng.Rout 2>&1
-        """
-
-rule export_zarr:
-    input:
-        ref = "reference/ref.Rds",
-        fullref = "seurat_objects/fullref.Rds",
-        script1 = "scripts/convert_to_h5ad.R",
-        script2 = "scripts/convert_to_zarr.py"
-    output:
-        h5Seurat = "vitessce/vitessce_ref.h5Seurat",
-        h5ad = "vitessce/vitessce_ref.h5ad",
-        zarr = directory("vitessce/vitessce_ref.zarr")
-    container:
-        "docker://satijalab/azimuth-references:vitessce"
-    shell:
-        """
-        mkdir -p vitessce
-        Rscript {input.script1} {input.ref} {input.fullref} {output.h5Seurat} > logs/export_zarr_anndata.Rout 2>&1
-        python3 {input.script2} {output.h5ad} {output.zarr}
-        """
-
 
