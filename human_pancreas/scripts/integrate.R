@@ -3,8 +3,8 @@ library(Matrix)
 library(Seurat)
 args <- commandArgs(trailingOnly = TRUE)
 
-panc8 <- readRDS(file = args[1])
-xin <- readRDS(file = args[2])
+panc8 <- readRDS(file = "seurat_objects/panc8.rds")
+xin <- readRDS(file = "seurat_objects/xin.rds")
 ob.list <- c(panc8, xin)
 features <- SelectIntegrationFeatures(object.list = ob.list)
 ob.list <- PrepSCTIntegration(object.list = ob.list, anchor.features = features)
@@ -27,4 +27,10 @@ panc8_xin <- RunPCA(object = panc8_xin)
 panc8_xin <- RunUMAP(object = panc8_xin, dims = 1:30, return.model = TRUE)
 panc8_xin <- FindNeighbors(object = panc8_xin, dims = 1:30)
 panc8_xin <- FindClusters(object = panc8_xin, resolution = c(0.8, 2))
-saveRDS(object = panc8_xin, file = args[3])
+saveRDS(object = panc8_xin, file = "seurat_objects/pancreas_integrated.rds")
+
+
+DefaultAssay(object = panc8_xin) <- "RNA"
+
+
+

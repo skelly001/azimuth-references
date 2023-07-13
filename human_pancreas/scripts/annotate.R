@@ -2,7 +2,7 @@
 library(Matrix)
 library(Seurat)
 args <- commandArgs(trailingOnly = TRUE)
-pi <- readRDS(file = args[1])
+pi <- readRDS(file = "seurat_objects/pancreas_integrated.rds")
 
 Idents(object = pi) <- "integrated_snn_res.2"
 pi <- SetIdent(object = pi, cells = WhichCells(object = pi, idents = c(0, 5, 7, 8, 9, 15, 27)), value = "alpha")
@@ -22,5 +22,6 @@ pi <- SetIdent(object = pi, cells = WhichCells(object = pi, idents = c(32)), val
 pi <- SetIdent(object = pi, cells = WhichCells(object = pi, idents = c(23)), value = "remove")
 annotations <- Idents(object = pi)
 
-saveRDS(annotations, file = args[2])
+saveRDS(annotations, file = "seurat_objects/annotations.rds")
+
 

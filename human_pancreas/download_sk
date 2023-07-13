@@ -1,0 +1,8 @@
+
+xin_url = "'https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE114297&format=file'"
+panc8_url = "https://www.dropbox.com/s/i43u5m7j08alo2l/panc8_3.0.2.rds"
+
+wget {params.xin_url} -P data
+mv data/'index.html?acc=GSE114297&format=file' data/xin.tar
+wget {params.panc8_url} -P data
+echo "Human pancreas data downloaded on: $(date)" > logs/download_data.log

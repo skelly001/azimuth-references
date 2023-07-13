@@ -1,15 +1,17 @@
 #!/usr/bin/env Rscript
 library(Matrix)
-library(Seurat)
+library(Seurat) #need seurat >=4.0.0 to work with Azimuth. Need spatstat 1.64-1 for seurat
 library(Azimuth)
 library(presto)
 library(dplyr)
+# remotes::install_version("Seurat", version="4.0.0", repos = "http://cran.us.r-project.org", force=T)
+# install.packages('https://cran.r-project.org/src/contrib/Archive/spatstat/spatstat_1.64-1.tar.gz', repos=NULL,type="source")
 args <- commandArgs(trailingOnly = TRUE)
 
 ref.dir <- "reference/"
 ob.dir <- "seurat_objects/"
-ref <- readRDS(file = args[1])
-annotations <- readRDS(file = args[2])
+ref <- readRDS(file = "seurat_objects/pancreas_integrated.rds")
+annotations <- readRDS(file = "seurat_objects/annotations.rds")
 Idents(object = ref) <- annotations
 
 if ("remove" %in% levels(x = ref)) {
@@ -23,7 +25,7 @@ full.ref <- ref
 colormap <- list(annotation.l1 = CreateColorMap(object = ref, seed = 2))
 colormap[["annotation.l1"]] <- colormap[["annotation.l1"]][sort(x = names(x = colormap[["annotation.l1"]]))]
 
-ref <- AzimuthReference(
+ref2 <- AzimuthReference(
   object = ref,
   refUMAP = "umap",
   refDR = "pca",
