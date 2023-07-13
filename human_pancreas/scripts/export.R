@@ -18,18 +18,27 @@ if ("remove" %in% levels(x = ref)) {
   ref <- subset(x = ref, idents = "remove", invert = TRUE)
   ref <- RunPCA(object = ref, verbose = FALSE)
 }
-ref$annotation.l1 <- Idents(object = ref)
+ref$annotation.l1 <- Idents(object = ref) 
+## NOTE: Something may have gone wrong while rebuilding the ref data.
+## ref$annotation.l1 does not match ref$annotation.l1 from the published 
+## reference dataset hosted on Zenodo/Azimuth. Looks like the current meta data 
+## "celltype" is identical to the published Zenodo/Azimuth meta data "annotation.l1"
+
 ref <- RunUMAP(object = ref, dims = 1:30, return.model = TRUE)
 full.ref <- ref
+
+## SK Save data ##
+saveRDS(full.ref, file = "seurat_objects/final_ref.rds")
+
 
 colormap <- list(annotation.l1 = CreateColorMap(object = ref, seed = 2))
 colormap[["annotation.l1"]] <- colormap[["annotation.l1"]][sort(x = names(x = colormap[["annotation.l1"]]))]
 
-ref2 <- AzimuthReference(
+ref <- AzimuthReference(
   object = ref,
   refUMAP = "umap",
   refDR = "pca",
-  refAssay = "integrated",
+  refAssay = "integrated", #"integrated"
   metadata = c("annotation.l1"),
   dims = 1:50,
   k.param = 31,
@@ -40,4 +49,11 @@ ref2 <- AzimuthReference(
 SaveAnnoyIndex(object = ref[["refdr.annoy.neighbors"]], file = file.path(ref.dir, "idx.annoy"))
 saveRDS(object = ref, file = file.path(ref.dir, "ref.Rds"))
 saveRDS(object = full.ref, file = file.path(ob.dir, "fullref.Rds"))
+
+
+
+
+
+
+
 
